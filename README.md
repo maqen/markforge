@@ -1,4 +1,4 @@
-# 🛠️ Markforge
+# ⚒️ Markforge
 
 A modern TypeScript library for crafting HTML into clean, readable Markdown. Built with LLMs and AI agents in mind. This is a modern TypeScript fork of the Turndown library, completely rewritten for modern use cases.
 
