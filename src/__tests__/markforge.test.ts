@@ -71,4 +71,38 @@ describe("Markforge", () => {
     expect(underscoreMarkforge.toMarkdown(html)).toBe("_emphasis_");
     expect(asteriskMarkforge.toMarkdown(html)).toBe("*emphasis*");
   });
+
+  test("custom inline link rule", () => {
+    markforge.addRule({
+      filter: (node) => {
+        return node.tagName === "a" && Boolean(node.attribs.href);
+      },
+      replacement: (content, node) => {
+        const href = node.attribs.href.trim();
+        let link = href;
+        const title = node.attribs.title ? `"${node.attribs.title}"` : "";
+        if (title) link = `${href} ${title}`;
+        return `[${content.trim()}](${link})`;
+      },
+    });
+
+    // Test basic link
+    expect(
+      markforge.toMarkdown('<a href="https://example.com">Example</a>')
+    ).toBe("[Example](https://example.com)");
+
+    // Test link with title
+    expect(
+      markforge.toMarkdown(
+        '<a href="https://example.com" title="Visit Example">Example</a>'
+      )
+    ).toBe('[Example](https://example.com "Visit Example")');
+
+    // Test link with spaces in href and content
+    expect(
+      markforge.toMarkdown(
+        '<a href=" https://example.com/path " title="Example Title"> Link Text </a>'
+      )
+    ).toBe('[Link Text](https://example.com/path "Example Title")');
+  });
 });

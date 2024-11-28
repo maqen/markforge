@@ -16,7 +16,7 @@ export interface MarkforgeOptions {
 }
 
 export interface Rule {
-  filter: string | string[] | ((node: Cheerio<Element>) => boolean);
+  filter: string | string[] | ((node: Element) => boolean);
   replacement: (
     content: string,
     node: Element,

@@ -1,11 +1,13 @@
 import type { Rule } from "./types";
+import * as cheerio from "cheerio";
 
 export const gfmRules: Record<string, Rule> = {
   taskListItem: {
     filter: (node) => {
-      if (!node.is("li")) return false;
-      const checkbox = node.find("input[type=checkbox]").first();
-      return checkbox.length > 0;
+      if (node.tagName !== "li") return false;
+      const $ = cheerio.load(node);
+      const hasCheckbox = $('input[type="checkbox"]').length > 0;
+      return hasCheckbox;
     },
     replacement: (content: string, node, options, $) => {
       const checkbox = $(node).find("input[type=checkbox]").first();

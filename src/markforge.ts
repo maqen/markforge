@@ -42,7 +42,8 @@ export class Markforge {
       if (Array.isArray(rule.filter)) {
         return rule.filter.some((f) => node.is(f));
       }
-      return rule.filter(node);
+      const element = node.get(0);
+      return element ? rule.filter(element) : false;
     });
   }
 
@@ -100,7 +101,7 @@ export class Markforge {
   }
 
   public addRule(rule: Rule): this {
-    this.rules.push(rule);
+    this.rules = [rule, ...this.rules];
     return this;
   }
 
