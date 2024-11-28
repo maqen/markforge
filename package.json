@@ -1,7 +1,7 @@
 {
   "name": "markforge",
   "description": "Modern TypeScript library for crafting HTML into Markdown with built-in GFM support",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Max Schedin",
   "type": "module",
   "main": "./dist/index.js",
