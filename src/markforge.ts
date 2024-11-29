@@ -1,5 +1,7 @@
 import type { Cheerio, CheerioAPI } from "cheerio";
-import type { Element, Node, Text } from "domhandler";
+import type { Element, AnyNode } from "domhandler";
+import { ElementType } from "domelementtype";
+import { isTag } from "domhandler";
 import * as cheerio from "cheerio";
 import { defaultRules } from "./defaultRules";
 import { gfmRules } from "./gfmRules";
@@ -34,49 +36,46 @@ export class Markforge {
     ];
   }
 
-  private findMatchingRule(node: Cheerio<Element>): Rule | undefined {
+  private findMatchingRule(element: Element): Rule | undefined {
     return this.rules.find((rule) => {
       if (typeof rule.filter === "string") {
-        return node.is(rule.filter);
+        return this.$(element).is(rule.filter);
       }
       if (Array.isArray(rule.filter)) {
-        return rule.filter.some((f) => node.is(f));
+        return rule.filter.some((f) => this.$(element).is(f));
       }
-      const element = node.get(0);
-      return element ? rule.filter(element) : false;
+      return rule.filter(element);
     });
   }
 
-  private isTextNode(node: Node): node is Text {
-    return node.type === "text";
+  private isTextNode(node: AnyNode) {
+    return node.type === ElementType.Text;
   }
 
-  private isElementNode(node: Node): node is Element {
-    return node.type === "tag";
+  private isElementNode(node: AnyNode): node is Element {
+    return isTag(node);
   }
 
-  private processNode(node: Cheerio<Node>): string {
-    const element = node.get(0);
-    if (!element) return "";
+  private processNode(node: AnyNode | undefined): string {
+    if (!node) return "";
 
-    // Handle text nodes
-    if (this.isTextNode(element)) {
-      return element.data || "";
+    if (this.isTextNode(node)) {
+      return node.data.trim() || "";
     }
 
     // Handle element nodes
-    if (this.isElementNode(element)) {
-      const $element = this.$(element);
+    if (this.isElementNode(node)) {
+      const element = node;
 
       // Process children first
-      const childContent = $element
+      const childContent = this.$(element)
         .contents()
-        .map((_, child) => this.processNode(this.$(child)))
+        .map((_, child) => this.processNode(child))
         .get()
         .join("");
 
       // Find and apply matching rule
-      const rule = this.findMatchingRule($element);
+      const rule = this.findMatchingRule(element);
       if (!rule) return childContent;
 
       return rule.replacement(childContent, element, this.options, this.$);
@@ -85,19 +84,20 @@ export class Markforge {
     return "";
   }
 
-  public toMarkdown(html: string): string {
+  public toMarkdown(html: string, selector: string = "body"): string {
     if (!html) {
       return "";
     }
 
     this.$ = cheerio.load(html);
-    const body = this.$("body").contents();
 
-    if (body.length === 0) {
+    const content = this.$(selector);
+
+    if (!content.length) {
       return "";
     }
 
-    return this.processNode(body);
+    return this.processNode(content[0]);
   }
 
   public addRule(rule: Rule): this {

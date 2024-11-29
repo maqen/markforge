@@ -19,7 +19,7 @@ export interface Rule {
   filter: string | string[] | ((node: Element) => boolean);
   replacement: (
     content: string,
-    node: Element,
+    element: Element,
     options: MarkforgeOptions,
     $: CheerioAPI
   ) => string;
