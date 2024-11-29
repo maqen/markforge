@@ -1,7 +1,6 @@
 # ⚒️ Markforge
 
-A modern TypeScript library for crafting HTML into clean, readable Markdown. Built with LLMs and AI agents in mind. This is a modern TypeScript fork of the Turndown library, completely rewritten for modern use cases.
-
+A modern TypeScript library for crafting HTML into clean, readable Markdown. Built with LLMs and AI agents in mind.
 ## Features
 
 - 🤖 **LLM-Optimized Output**: Produces clean, consistent Markdown that's ideal for LLMs and AI agents
@@ -165,10 +164,6 @@ interface MarkforgeOptions {
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Credits
-
-This project is a modern TypeScript rewrite of [Turndown](https://github.com/mixmark-io/turndown) by Dom Christie, with additional features and optimizations for modern use cases, particularly LLM and AI applications.
 
 ## License
 
