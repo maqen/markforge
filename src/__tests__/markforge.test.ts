@@ -15,6 +15,42 @@ describe("Markforge", () => {
       "**Hello World**"
     );
     expect(markforge.toMarkdown("<em>Hello World</em>")).toBe("_Hello World_");
+    expect(
+      markforge.toMarkdown(
+        "<html><body><div><h1>Hello, world!</h1></div></body></html>"
+      )
+    ).toBe("# Hello, world!");
+    expect(
+      markforge.toMarkdown(
+        `<html>
+          <body>
+          <div>
+            <h1>Hello, world!</h1>
+            <table>
+            <tr>
+            <th>header</th>
+            <th>header</th>
+            </tr>
+              <tr><td>cell</td><td>cell</td></tr>
+              <tr><td>cell</td><td>cell</td></tr>
+            </table>
+          </div>
+          <p>paragraph</p>
+          <ul>
+            <li>item</li>
+            <li>item</li>
+          </ul>
+          <div>
+            <p>paragraph</p>
+          </div>
+          <p><a href="https://example.com">link</a></p>
+          <p><strong>strong</strong>Inline <a href="https://example.com">link</a> here</p>
+          </body>
+        </html>`
+      )
+    ).toBe(
+      "# Hello, world!\n\n| header | header |\n| --- | --- |\n| cell | cell |\n| cell | cell |\n\nparagraph\n\n- item\n- item\n\nparagraph\n\n[link](https://example.com)\n\n**strong**Inline [link](https://example.com) here\n"
+    );
   });
 
   test("empty input handling", () => {
